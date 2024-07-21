@@ -131,7 +131,7 @@ db.users.aggregate(
     {
       $addFields: {
         numberOfTags: {
-          $size: "$tags"
+          $size: {$ifNull: ["$tags", []]}
         }
       }
     },
@@ -145,3 +145,29 @@ db.users.aggregate(
     }
   ]
 
+// How many users have 'enim' as one of their tags
+[
+    {
+      $unwind: "$tags"
+    },
+    {
+      $match: {
+        "tags": "enim"
+      }
+    },
+    {
+      $count: 'total'
+    }
+  ]
+
+  // How many users have 'enim' as one of their tags
+[
+    {
+      $match: {
+        "tags": "enim"
+      }
+    },
+    {
+      $count: 'total'
+    }
+  ]
