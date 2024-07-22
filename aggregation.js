@@ -129,45 +129,82 @@ db.users.aggregate(
 // What is the average number of tags per user
 [
     {
-      $addFields: {
-        numberOfTags: {
-          $size: {$ifNull: ["$tags", []]}
+        $addFields: {
+            numberOfTags: {
+                $size: { $ifNull: ["$tags", []] }
+            }
         }
-      }
     },
     {
-      $group: {
-        _id: null,
-        average: {
-          $avg: "$numberOfTags"
+        $group: {
+            _id: null,
+            average: {
+                $avg: "$numberOfTags"
+            }
         }
-      }
     }
-  ]
+]
 
 // How many users have 'enim' as one of their tags
 [
     {
-      $unwind: "$tags"
+        $unwind: "$tags"
     },
     {
-      $match: {
-        "tags": "enim"
-      }
+        $match: {
+            "tags": "enim"
+        }
     },
     {
-      $count: 'total'
+        $count: 'total'
     }
-  ]
+]
 
-  // How many users have 'enim' as one of their tags
+// How many users have 'enim' as one of their tags
 [
     {
-      $match: {
-        "tags": "enim"
-      }
+        $match: {
+            "tags": "enim"
+        }
     },
     {
-      $count: 'total'
+        $count: 'total'
     }
-  ]
+]
+
+
+//What are the names and age of users who are inactive and have 'velit' as a tag
+
+[
+    {
+        $addFields: {
+            tags: "velit",
+            isActive: false,
+        },
+    },
+    {
+        $project: {
+            name: 1,
+            age: 1
+        }
+    }
+
+]
+
+
+// How many users have a phone number starting with +1 (940)
+
+[
+    {
+        $match: {
+            "company.phone": {
+                $regex: "\\+1 \\(940\\)",
+                $options: "i"
+            }
+        }
+    }, {
+        $count: 'numberOfUsers'
+    }
+]
+
+
