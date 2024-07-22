@@ -263,3 +263,13 @@ db.users.aggregate(
       }
     }
   ]
+
+
+  // Find the users that have both enim and id as their tags
+[
+    {
+      $match: {
+        tags: {$all: ["enim", "id"]}
+      }
+    }
+  ]
