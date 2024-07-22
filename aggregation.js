@@ -209,7 +209,6 @@ db.users.aggregate(
 
 
 // How many users have a phone number starting with +1 (940)
-
 [
     {
       $match: {
@@ -218,5 +217,49 @@ db.users.aggregate(
       }
     ,{
       $count: 'numberOfUsers'
+    }
+  ]
+
+  // Who has registered the most recently
+
+[
+    {
+      $sort: {
+        registered: -1
+      }
+    },
+    {
+      $limit: 1
+    }, 
+    {
+      $project: {
+        name: 1,
+        registered: 1,
+        _id: 0
+      }
+    }
+  ]
+
+
+  // Categorize users by their favorite fruits
+
+[
+    {
+      $group: {
+        _id: "$favoriteFruit",
+        users: {
+          $push: "$name"
+        }
+      }
+    }
+  ]
+
+  // How many users have 'ad' as the second tag in their list of tags
+
+[
+    {
+      $match: {
+        "tags.1": "ad"
+      }
     }
   ]
